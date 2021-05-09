@@ -32,7 +32,7 @@ def model_predict(img_path, model):
 @app.route('/predict', methods=['POST', 'GET'])
 def classify():
     try:
-        if request.method == 'POST':
+        if request.method == 'GET':
             # check if the post request has the image part
             if 'image' not in request.files:
                 return jsonify({
@@ -47,10 +47,10 @@ def classify():
                 }), 400
             filename = utils.save_upload_file(file)
             return jsonify({
-                'method': "POST",
+                'method': "GET",
                 'filename': filename
             })
-        elif request.method == 'GET' and request.args.get('image_url', '') != '':
+        elif request.method == 'POST' and request.args.get('image_url', '') != '':
             image_url = request.args.get('image_url')
             filename = utils.download_image_from_url(image_url)
             basepath = os.path.dirname(__file__)
@@ -64,14 +64,14 @@ def classify():
             str2 = 'Normal'
             if predict[0][0] == 1:
                 return jsonify({
-                    'method': 'GET',
+                    'method': 'POST',
                     'image_url': image_url,
                     'file_name': filename,
                     'result': str2
                 })
             else:
                 return jsonify({
-                    'method': 'GET',
+                    'method': 'POST',
                     'image_url': image_url,
                     'file_name': filename,
                     'result': str1
